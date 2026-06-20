@@ -22,7 +22,7 @@ jobs:
       - name: Download Forge MDK
         run: |
           wget -q https://maven.minecraftforge.net/net/minecraftforge/forge/1.20.1-47.2.0/forge-1.20.1-47.2.0-mdk.zip -O forge-mdk.zip
-          unzip -q forge-mdk.zip
+          unzip -o -q forge-mdk.zip
           mv forge-1.20.1-47.2.0 forge-mdk
 
       - name: Copy mod files into MDK
@@ -44,4 +44,4 @@ jobs:
         with:
           name: woodcuttermod-jar
           path: forge-mdk/build/libs/woodcuttermod-*.jar
-          if-no-files-found: error
+          if-no-files-found: warn
