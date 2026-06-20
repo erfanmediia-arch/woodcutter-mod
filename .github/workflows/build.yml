@@ -19,28 +19,26 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Download Forge MDK
+      - name: Setup Forge workspace
         run: |
-          wget -q https://maven.minecraftforge.net/net/minecraftforge/forge/1.20.1-47.2.0/forge-1.20.1-47.2.0-mdk.zip -O forge-mdk.zip
-          unzip -o -q forge-mdk.zip
-          rm forge-mdk.zip
+          mkdir -p /home/runner/forge-workspace
+          cd /home/runner/forge-workspace
+          wget -q https://maven.minecraftforge.net/net/minecraftforge/forge/1.20.1-47.2.0/forge-1.20.1-47.2.0-mdk.zip -O mdk.zip
+          unzip -o -q mdk.zip
+          rm mdk.zip
+          cp -r $GITHUB_WORKSPACE/src .
+          cp $GITHUB_WORKSPACE/build.gradle .
+          cp $GITHUB_WORKSPACE/gradle.properties .
+          cp $GITHUB_WORKSPACE/settings.gradle .
+          chmod +x gradlew
 
-      - name: Copy mod files into MDK
-        run: |
-          cp -r src/main/java/com/woodcutter src/main/java/com/
-          cp -r src/main/resources/META-INF/mods.toml src/main/resources/META-INF/
-          cp build.gradle build.gradle
-          cp gradle.properties gradle.properties
-
-      - name: Make gradlew executable
-        run: chmod +x gradlew
-
-      - name: Build mod JAR
+      - name: Build
+        working-directory: /home/runner/forge-workspace
         run: ./gradlew build --no-daemon
 
-      - name: Upload JAR artifact
+      - name: Upload JAR
         uses: actions/upload-artifact@v4
         with:
           name: woodcuttermod-jar
-          path: build/libs/woodcuttermod-*.jar
+          path: /home/runner/forge-workspace/build/libs/woodcuttermod-*.jar
           if-no-files-found: warn
