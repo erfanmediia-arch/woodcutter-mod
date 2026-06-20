@@ -19,11 +19,13 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Download Forge MDK
+      - name: Download and extract Forge MDK
         run: |
           wget -q https://maven.minecraftforge.net/net/minecraftforge/forge/1.20.1-47.2.0/forge-1.20.1-47.2.0-mdk.zip -O forge-mdk.zip
           unzip -o -q forge-mdk.zip
-          mv forge-1.20.1-47.2.0 forge-mdk
+          FORGE_DIR=$(ls -d */ | grep forge | head -1)
+          echo "Found: $FORGE_DIR"
+          mv "$FORGE_DIR" forge-mdk
 
       - name: Copy mod files into MDK
         run: |
